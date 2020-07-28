@@ -17,17 +17,24 @@ public class Reuniao {
     @NotNull
     UUID id;
 
+    boolean active;
+
     @NotNull
     @Size(max = 128)
     String titulo;
 
-    @NotNull
     @Size(max = 512)
     String descricao;
 
     @NotNull
     @FutureOrPresent
     OffsetDateTime dataHora;
+
+    @NotNull
+    OffsetDateTime dataHoraCriacao;
+
+    @NotNull
+    OffsetDateTime dataHoraUltimaAtualizacao;
 
     @NotNull
     @NotEmpty

@@ -1,103 +1,54 @@
 databaseChangeLog:
   - changeSet:
-      id: create_enum_tables
+      id: create_reuniao
       author: rafaellins
-      comment: Create Enums tables
-      changes:
-        - createTable:
-            tableName: questionnaire_type_enum
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-              - column:
-                  name: name
-                  type: varchar(32)
-                  constraints:
-                    nullable: false
-  - changeSet:
-      id: populate_enum_tables
-      author: rafaellins
-      comment: Populate Enumerations tables
-      changes:
-        - insert:
-            tableName: questionnaire_type_enum
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: name
-                  value: QUIZ
-        - insert:
-            tableName: questionnaire_type_enum
-            columns:
-              - column:
-                  name: id
-                  value: 2
-              - column:
-                  name: name
-                  value: FORM
-        - insert:
-            tableName: questionnaire_type_enum
-            columns:
-              - column:
-                  name: id
-                  value: 3
-              - column:
-                  name: name
-                  value: RESEARCH
-  - changeSet:
-      id: create_questionnaire_table
-      author: rafaellins
-      comment: Create Questionnaire table
-      changes:
-        - createTable:
-            tableName: questionnaire
-            columns:
-              - column:
-                  name: id
-                  type: uuid
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-              - column:
-                  name: active
-                  type: boolean
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: false
-              - column:
-                  name: type
-                  type: int
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_questionnaire___questionnaire_type_enum
-                    references: questionnaire_type_enum(id)
-              - column:
-                  name: slug
-                  type: varchar(64)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: created_by
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
-                  name: creation_time
-                  type: timestamptz
-                  constraints:
-                    nullable: false
-              - column:
-                  name: last_update_time
-                  type: timestamptz
-                  constraints:
-                    nullable: false
+      comment: Tabela Reuniao
+        changes:
+          - createTable:
+              tableName: reuniao
+              columns:
+                - column:
+                    name: id
+                    type: uuid
+                    constraints:
+                      nullable: false
+                      primaryKey: true
+                - column:
+                    name: active
+                    type: boolean
+                    defaultValueBoolean: false
+                    constraints:
+                      nullable: false
+                #              - column:
+                #                  name: type
+                #                  type: int
+                #                  constraints:
+                #                    nullable: false
+                #                    foreignKeyName: fk_questionnaire___questionnaire_type_enum
+                #                    references: questionnaire_type_enum(id)
+                - column:
+                    name: titulo
+                    type: varchar(128)
+                    constraints:
+                      nullable: false
+                - column:
+                    name: descricao
+                    type: varchar(512)
+                - column:
+                    name: data_hora
+                    type: timestamptz
+                    constraints:
+                      nullable: false
+                - column:
+                    name: data_hora_criacao
+                    type: timestamptz
+                    constraints:
+                      nullable: false
+                - column:
+                    name: data_hora_ultima_atualizacao
+                    type: timestamptz
+                    constraints:
+                      nullable: false
   - changeSet:
       id: create_question_table
       author: rafaellins
