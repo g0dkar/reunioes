@@ -1,0 +1,221 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_enum_tables
+      author: rafaellins
+      comment: Create Enums tables
+      changes:
+        - createTable:
+            tableName: questionnaire_type_enum
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: populate_enum_tables
+      author: rafaellins
+      comment: Populate Enumerations tables
+      changes:
+        - insert:
+            tableName: questionnaire_type_enum
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: QUIZ
+        - insert:
+            tableName: questionnaire_type_enum
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: FORM
+        - insert:
+            tableName: questionnaire_type_enum
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: RESEARCH
+  - changeSet:
+      id: create_questionnaire_table
+      author: rafaellins
+      comment: Create Questionnaire table
+      changes:
+        - createTable:
+            tableName: questionnaire
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_questionnaire___questionnaire_type_enum
+                    references: questionnaire_type_enum(id)
+              - column:
+                  name: slug
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create_question_table
+      author: rafaellins
+      comment: Create Question table
+      changes:
+        - createTable:
+            tableName: question
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: questionnaire_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_question___questionnaire
+                    references: questionnaire(id)
+              - column:
+                  name: order
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enunciation
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(1024)
+              - column:
+                  name: options_id
+                  type: uuid
+              - column:
+                  name: metadata_id
+                  type: uuid
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+  #  - changeSet:
+  #      id: change_question_history_table_add_fk
+  #      author: rafaellins
+  #      comment: Add Question FK to Question History table
+  #      changes:
+  #        - addForeignKeyConstraint:
+  #            baseColumnNames: object_id
+  #            baseTableName: questionnaire_history
+  #            constraintName: fk_question_history___question
+  #            referencedColumnNames: id
+  #            referencedTableName: question
+  - changeSet:
+      id: create_alternative_table
+      author: rafaellins
+      comment: Create Alternative table
+      changes:
+        - createTable:
+            tableName: alternative
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: question_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_alternative___question
+                    references: question(id)
+              - column:
+                  name: order
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(1024)
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: creation_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_update_time
+                  type: timestamptz
+                  constraints:
+                    nullable: false

@@ -1,0 +1,57 @@
+spring:
+  port: 8000
+  application:
+    name: respondeai-backend-questionaries
+  jooq:
+    sql-dialect: POSTGRES
+  datasource:
+    url: ${DB_JDBC_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_SCHEMA:reunioes}}
+    username: ${DB_USER:reunioes}
+    password: ${DB_PASSWORD:reunioes}
+  liquibase:
+    enabled: false
+  jackson:
+    default-property-inclusion: non_absent
+    time-zone: UTC
+    property-naming-strategy: SNAKE_CASE
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+  # Enables changing the default 404 response
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+
+info:
+  app:
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      source: '@project.build.targetJdk@'
+      target: '@project.build.targetJdk@'
+
+# Actuator Settings
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+
+# Disable whitelabel error page to prevent exposing framework information
+server:
+  error:
+    whitelabel:
+      enabled: false
