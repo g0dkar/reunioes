@@ -4,8 +4,17 @@
 package br.com.rafaellins.reunioes.jooq;
 
 
-import br.com.rafaellins.reunioes.jooq.tables.*;
-import br.com.rafaellins.reunioes.jooq.tables.records.*;
+import br.com.rafaellins.reunioes.jooq.tables.Direcionamento;
+import br.com.rafaellins.reunioes.jooq.tables.Participante;
+import br.com.rafaellins.reunioes.jooq.tables.Reuniao;
+import br.com.rafaellins.reunioes.jooq.tables.ReuniaoDirecionamento;
+import br.com.rafaellins.reunioes.jooq.tables.ReuniaoParticipante;
+import br.com.rafaellins.reunioes.jooq.tables.records.DirecionamentoRecord;
+import br.com.rafaellins.reunioes.jooq.tables.records.ParticipanteRecord;
+import br.com.rafaellins.reunioes.jooq.tables.records.ReuniaoDirecionamentoRecord;
+import br.com.rafaellins.reunioes.jooq.tables.records.ReuniaoParticipanteRecord;
+import br.com.rafaellins.reunioes.jooq.tables.records.ReuniaoRecord;
+
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -13,10 +22,10 @@ import org.jooq.impl.Internal;
 
 
 /**
- * A class modelling foreign key relationships and constraints of tables of
+ * A class modelling foreign key relationships and constraints of tables of 
  * the <code>public</code> schema.
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Keys {
 
     // -------------------------------------------------------------------------
@@ -47,16 +56,16 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<DirecionamentoRecord> DIRECIONAMENTO_PKEY = Internal.createUniqueKey(Direcionamento.DIRECIONAMENTO, "direcionamento_pkey", new TableField[]{Direcionamento.DIRECIONAMENTO.ID}, true);
-        public static final UniqueKey<ParticipanteRecord> PARTICIPANTE_PKEY = Internal.createUniqueKey(Participante.PARTICIPANTE, "participante_pkey", new TableField[]{Participante.PARTICIPANTE.ID}, true);
-        public static final UniqueKey<ReuniaoRecord> REUNIAO_PKEY = Internal.createUniqueKey(Reuniao.REUNIAO, "reuniao_pkey", new TableField[]{Reuniao.REUNIAO.ID}, true);
+        public static final UniqueKey<DirecionamentoRecord> DIRECIONAMENTO_PKEY = Internal.createUniqueKey(Direcionamento.DIRECIONAMENTO, "direcionamento_pkey", new TableField[] { Direcionamento.DIRECIONAMENTO.ID }, true);
+        public static final UniqueKey<ParticipanteRecord> PARTICIPANTE_PKEY = Internal.createUniqueKey(Participante.PARTICIPANTE, "participante_pkey", new TableField[] { Participante.PARTICIPANTE.ID }, true);
+        public static final UniqueKey<ReuniaoRecord> REUNIAO_PKEY = Internal.createUniqueKey(Reuniao.REUNIAO, "reuniao_pkey", new TableField[] { Reuniao.REUNIAO.ID }, true);
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<DirecionamentoRecord, ParticipanteRecord> DIRECIONAMENTO__FK_DIRECIONAMENTO___PARTICIPANTE = Internal.createForeignKey(Keys.PARTICIPANTE_PKEY, Direcionamento.DIRECIONAMENTO, "fk_direcionamento___participante", new TableField[]{Direcionamento.DIRECIONAMENTO.PARTICIPANTE_ID}, true);
-        public static final ForeignKey<ReuniaoDirecionamentoRecord, ReuniaoRecord> REUNIAO_DIRECIONAMENTO__FK_REL_REUNIAO_DIRECIONAMENTO___REUNIAO = Internal.createForeignKey(Keys.REUNIAO_PKEY, ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO, "fk_rel_reuniao_direcionamento___reuniao", new TableField[]{ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO.REUNIAO_ID}, true);
-        public static final ForeignKey<ReuniaoDirecionamentoRecord, DirecionamentoRecord> REUNIAO_DIRECIONAMENTO__FK_REL_REUNIAO_DIRECIONAMENTO___DIRECIONAMENTO = Internal.createForeignKey(Keys.DIRECIONAMENTO_PKEY, ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO, "fk_rel_reuniao_direcionamento___direcionamento", new TableField[]{ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO.DIRECIONAMENTO_ID}, true);
-        public static final ForeignKey<ReuniaoParticipanteRecord, ReuniaoRecord> REUNIAO_PARTICIPANTE__FK_REL_REUNIAO_PARTICIPANTE___REUNIAO = Internal.createForeignKey(Keys.REUNIAO_PKEY, ReuniaoParticipante.REUNIAO_PARTICIPANTE, "fk_rel_reuniao_participante___reuniao", new TableField[]{ReuniaoParticipante.REUNIAO_PARTICIPANTE.REUNIAO_ID}, true);
-        public static final ForeignKey<ReuniaoParticipanteRecord, ParticipanteRecord> REUNIAO_PARTICIPANTE__FK_REL_REUNIAO_PARTICIPANTE___PARTICIPANTE = Internal.createForeignKey(Keys.PARTICIPANTE_PKEY, ReuniaoParticipante.REUNIAO_PARTICIPANTE, "fk_rel_reuniao_participante___participante", new TableField[]{ReuniaoParticipante.REUNIAO_PARTICIPANTE.PARTICIPANTE_ID}, true);
+        public static final ForeignKey<DirecionamentoRecord, ParticipanteRecord> DIRECIONAMENTO__FK_DIRECIONAMENTO___PARTICIPANTE = Internal.createForeignKey(Keys.PARTICIPANTE_PKEY, Direcionamento.DIRECIONAMENTO, "fk_direcionamento___participante", new TableField[] { Direcionamento.DIRECIONAMENTO.PARTICIPANTE_ID }, true);
+        public static final ForeignKey<ReuniaoDirecionamentoRecord, ReuniaoRecord> REUNIAO_DIRECIONAMENTO__FK_REL_REUNIAO_DIRECIONAMENTO___REUNIAO = Internal.createForeignKey(Keys.REUNIAO_PKEY, ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO, "fk_rel_reuniao_direcionamento___reuniao", new TableField[] { ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO.REUNIAO_ID }, true);
+        public static final ForeignKey<ReuniaoDirecionamentoRecord, DirecionamentoRecord> REUNIAO_DIRECIONAMENTO__FK_REL_REUNIAO_DIRECIONAMENTO___DIRECIONAMENTO = Internal.createForeignKey(Keys.DIRECIONAMENTO_PKEY, ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO, "fk_rel_reuniao_direcionamento___direcionamento", new TableField[] { ReuniaoDirecionamento.REUNIAO_DIRECIONAMENTO.DIRECIONAMENTO_ID }, true);
+        public static final ForeignKey<ReuniaoParticipanteRecord, ReuniaoRecord> REUNIAO_PARTICIPANTE__FK_REL_REUNIAO_PARTICIPANTE___REUNIAO = Internal.createForeignKey(Keys.REUNIAO_PKEY, ReuniaoParticipante.REUNIAO_PARTICIPANTE, "fk_rel_reuniao_participante___reuniao", new TableField[] { ReuniaoParticipante.REUNIAO_PARTICIPANTE.REUNIAO_ID }, true);
+        public static final ForeignKey<ReuniaoParticipanteRecord, ParticipanteRecord> REUNIAO_PARTICIPANTE__FK_REL_REUNIAO_PARTICIPANTE___PARTICIPANTE = Internal.createForeignKey(Keys.PARTICIPANTE_PKEY, ReuniaoParticipante.REUNIAO_PARTICIPANTE, "fk_rel_reuniao_participante___participante", new TableField[] { ReuniaoParticipante.REUNIAO_PARTICIPANTE.PARTICIPANTE_ID }, true);
     }
 }

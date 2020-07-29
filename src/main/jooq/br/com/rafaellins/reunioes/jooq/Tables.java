@@ -4,13 +4,17 @@
 package br.com.rafaellins.reunioes.jooq;
 
 
-import br.com.rafaellins.reunioes.jooq.tables.*;
+import br.com.rafaellins.reunioes.jooq.tables.Direcionamento;
+import br.com.rafaellins.reunioes.jooq.tables.Participante;
+import br.com.rafaellins.reunioes.jooq.tables.Reuniao;
+import br.com.rafaellins.reunioes.jooq.tables.ReuniaoDirecionamento;
+import br.com.rafaellins.reunioes.jooq.tables.ReuniaoParticipante;
 
 
 /**
  * Convenience access to all tables in public
  */
-@SuppressWarnings({"all", "unchecked", "rawtypes"})
+@SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
 
     /**
