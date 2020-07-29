@@ -15,7 +15,7 @@ public class Direcionamento {
     UUID id;
 
     @NotNull
-    UUID participante;
+    UUID participanteId;
 
     @NotNull
     @Size(max = 256)
@@ -23,4 +23,9 @@ public class Direcionamento {
 
     @NotNull
     OffsetDateTime prazo;
+
+    int ordem;
+
+    @NotNull
+    OffsetDateTime dataHoraCriacao;
 }

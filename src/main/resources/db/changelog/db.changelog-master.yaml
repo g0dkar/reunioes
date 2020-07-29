@@ -1,61 +1,11 @@
 databaseChangeLog:
   - changeSet:
-      id: create_reuniao
+      id: create_reuniao_table
       author: rafaellins
       comment: Tabela Reuniao
-        changes:
-          - createTable:
-              tableName: reuniao
-              columns:
-                - column:
-                    name: id
-                    type: uuid
-                    constraints:
-                      nullable: false
-                      primaryKey: true
-                - column:
-                    name: active
-                    type: boolean
-                    defaultValueBoolean: false
-                    constraints:
-                      nullable: false
-                #              - column:
-                #                  name: type
-                #                  type: int
-                #                  constraints:
-                #                    nullable: false
-                #                    foreignKeyName: fk_questionnaire___questionnaire_type_enum
-                #                    references: questionnaire_type_enum(id)
-                - column:
-                    name: titulo
-                    type: varchar(128)
-                    constraints:
-                      nullable: false
-                - column:
-                    name: descricao
-                    type: varchar(512)
-                - column:
-                    name: data_hora
-                    type: timestamptz
-                    constraints:
-                      nullable: false
-                - column:
-                    name: data_hora_criacao
-                    type: timestamptz
-                    constraints:
-                      nullable: false
-                - column:
-                    name: data_hora_ultima_atualizacao
-                    type: timestamptz
-                    constraints:
-                      nullable: false
-  - changeSet:
-      id: create_question_table
-      author: rafaellins
-      comment: Create Question table
       changes:
         - createTable:
-            tableName: question
+            tableName: reuniao
             columns:
               - column:
                   name: id
@@ -70,64 +20,35 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: questionnaire_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_question___questionnaire
-                    references: questionnaire(id)
-              - column:
-                  name: order
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: enunciation
+                  name: titulo
                   type: varchar(128)
                   constraints:
                     nullable: false
               - column:
-                  name: description
-                  type: varchar(1024)
+                  name: descricao
+                  type: varchar(512)
               - column:
-                  name: options_id
-                  type: uuid
-              - column:
-                  name: metadata_id
-                  type: uuid
-              - column:
-                  name: created_by
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
-                  name: creation_time
+                  name: data_hora
                   type: timestamptz
                   constraints:
                     nullable: false
               - column:
-                  name: last_update_time
+                  name: data_hora_criacao
                   type: timestamptz
                   constraints:
                     nullable: false
-  #  - changeSet:
-  #      id: change_question_history_table_add_fk
-  #      author: rafaellins
-  #      comment: Add Question FK to Question History table
-  #      changes:
-  #        - addForeignKeyConstraint:
-  #            baseColumnNames: object_id
-  #            baseTableName: questionnaire_history
-  #            constraintName: fk_question_history___question
-  #            referencedColumnNames: id
-  #            referencedTableName: question
+              - column:
+                  name: data_hora_ultima_atualizacao
+                  type: timestamptz
+                  constraints:
+                    nullable: false
   - changeSet:
-      id: create_alternative_table
+      id: create_participante_table
       author: rafaellins
-      comment: Create Alternative table
+      comment: Tabela Participante
       changes:
         - createTable:
-            tableName: alternative
+            tableName: participante
             columns:
               - column:
                   name: id
@@ -136,37 +57,90 @@ databaseChangeLog:
                     nullable: false
                     primaryKey: true
               - column:
-                  name: question_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_alternative___question
-                    references: question(id)
-              - column:
-                  name: order
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: text
+                  name: nome
                   type: varchar(128)
                   constraints:
                     nullable: false
               - column:
-                  name: description
-                  type: varchar(1024)
+                  name: hash_nome
+                  type: varchar(64)
+  - changeSet:
+      id: create_direcionamento_table
+      author: rafaellins
+      comment: Tabela Direcionamento
+      changes:
+        - createTable:
+            tableName: direcionamento
+            columns:
               - column:
-                  name: created_by
+                  name: id
                   type: uuid
                   constraints:
                     nullable: false
+                    primaryKey: true
               - column:
-                  name: creation_time
+                  name: participante_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_direcionamento___participante
+                    references: participante(id)
+              - column:
+                  name: ordem
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: direcionamento
+                  type: varchar(128)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prazo
                   type: timestamptz
                   constraints:
                     nullable: false
               - column:
-                  name: last_update_time
+                  name: data_hora_criacao
                   type: timestamptz
                   constraints:
                     nullable: false
+  - changeSet:
+      id: create_relationship_table
+      author: rafaellins
+      comment: Relacionamento Reuniao-Participante
+      changes:
+        - createTable:
+            tableName: reuniao_participante
+            columns:
+              - column:
+                  name: reuniao_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rel_reuniao_participante___reuniao
+                    references: reuniao(id)
+              - column:
+                  name: participante_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rel_reuniao_participante___participante
+                    references: participante(id)
+        - createTable:
+            tableName: reuniao_direcionamento
+            columns:
+              - column:
+                  name: reuniao_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rel_reuniao_direcionamento___reuniao
+                    references: reuniao(id)
+              - column:
+                  name: direcionamento_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_rel_reuniao_direcionamento___direcionamento
+                    references: direcionamento(id)

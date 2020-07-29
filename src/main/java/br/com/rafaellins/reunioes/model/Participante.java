@@ -18,5 +18,5 @@ public class Participante {
     String nome;
 
     @NotNull
-    String hash;
+    String hashNome;
 }
