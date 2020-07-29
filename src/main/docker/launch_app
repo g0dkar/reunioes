@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Sets up JVM arguments and launches a Java JAR Application
+
+# https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuxof pipefail
+
+ALL_OPTS="-server -Duser.timezone=${TIMEZONE:-UTC}"
+
+############################
+# Memory
+############################
+# Options used:
+# +AlwaysPreTouch: Pre-touch the Heap at startup. A bit slower to start, but reduces hiccups during execution.
+# +DisableExplicitGC: Makes calling System.gc() do nothing.
+ALL_OPTS="${ALL_OPTS} -XX:+AlwaysPreTouch -XX:+DisableExplicitGC"
+
+# If there's a exact amount of memory to be allocated...
+if [[ "${MEM_SIZE_KB:-}" != '' ]]; then
+  # Because of +AlwaysPreTouch, having Xmx and Xms the same will allocate all the memory wanted at startup
+  # Slow to start, but VERY stable while executing.
+  ALL_OPTS="${ALL_OPTS} -Xmx${MEM_SIZE_KB}k -Xms${MEM_SIZE_KB}k"
+
+# Else allocate a % of the memory for the JVM. Default is 70%.
+else
+  ALL_OPTS="${ALL_OPTS} -XX:MaxRAMPercentage=${MEM_MAX_PCT:-70}.0"
+fi
+
+############################
+# GC: Allow to use Shenandoah or ZGC
+# Note: AdoptOpenJDK 11 doesn't support these two. This is for a future-ready script.
+#       This project's Dockerfile uses 11 because it's the latest LTS JDK version.
+############################
+if [[ "${USE_SHENANDOAH:-}" != '' ]]; then
+  # More info: http://clojure-goes-fast.com/blog/shenandoah-in-production/
+  # Note: Users of this script may add some other options recommended by Shenandoah:
+  #       https://wiki.openjdk.java.net/display/shenandoah/Main#Main-Basicconfiguration
+  ALL_OPTS="${ALL_OPTS} -XX:+UnlockExperimentalVMOptions -XX:+UseShenandoahGC"
+
+elif [[ "${USE_ZGC:-}" != '' ]]; then
+  # Available as Stable starting from JDK 13
+  # More info: https://wiki.openjdk.java.net/display/zgc/Main
+  ALL_OPTS="${ALL_OPTS} -XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
+fi
+
+############################
+# JMX
+############################
+if [[ "${JMX_PORT:-}" != '' ]]; then
+  ALL_OPTS="${ALL_OPTS} -Dcom.sun.management.jmxremote
+             -Dcom.sun.management.jmxremote.authenticate=false
+             -Dcom.sun.management.jmxremote.local.only=false
+             -Dcom.sun.management.jmxremote.port=${JMX_PORT}
+             -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}
+             -Dcom.sun.management.jmxremote.ssl=false
+             -Dcom.sun.management.jmxremote.host=$(hostname -i)
+             -Djava.rmi.server.hostname=$(hostname -i)"
+fi
+
+ALL_OPTS="${ALL_OPTS} ${JAVA_OPTS:-}"
+
+exec java -jar $ALL_OPTS $1

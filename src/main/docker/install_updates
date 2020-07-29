@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+# Install updates and a few utilities (for debugging)
+
+# Setting this makes the script very verbose, but that allow for build auditing if needed.
+# https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuxo pipefail
+
+# Prevents installation of documentation
+mkdir -p /etc/dpkg/dpkg.conf.d
+echo 'path-exclude /usr/share/*' >/etc/dpkg/dpkg.conf.d/01_nodoc
+
+# Helper function to retry apt commands upon failure. Networks are inherently
+# unstable and this accounts for that by retrying three times.
+function apt-retry() {
+  local n=0
+
+  while ((n < 3)); do
+    if DEBIAN_FRONTEND=noninteractive apt-get "$@"; then
+      return
+    fi
+    sleep 1s
+    n+=1
+  done
+
+  exit 1
+}
+
+apt-retry update --no-allow-insecure-repositories
+apt-retry install \
+  --auto-remove \
+  --no-install-recommends \
+  --no-install-suggests \
+  --show-upgraded \
+  --yes \
+  unattended-upgrades \
+  procps \
+  curl \
+  host
+
+# Install all security upgrades
+# https://wiki.debian.org/UnattendedUpgrades
+unattended-upgrades -d
+
+# Cleans up all caches of apt-get to reduce layer size.
+rm -rf /var/lib/apt/lists/*
+
+# Since this is a docker image setup script, self destruct :)
+rm -f /install_updates
