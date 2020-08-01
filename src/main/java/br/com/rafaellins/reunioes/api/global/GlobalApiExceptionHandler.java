@@ -103,10 +103,11 @@ public class GlobalApiExceptionHandler extends ResponseEntityExceptionHandler {
         if (error instanceof FieldError) {
             return ((FieldError) error).getField();
         } else {
-            String code = error.getCode();
             String[] codes = error.getCodes();
 
-            if (codes != null) {
+            if (codes != null && codes.length > 0) {
+                String code = codes[codes.length - 1];
+
                 if (codes.length >= 3) {
                     return codes[2].substring(code.length() + 1);
                 } else {
@@ -115,6 +116,6 @@ public class GlobalApiExceptionHandler extends ResponseEntityExceptionHandler {
             }
         }
 
-        return "";
+        return null;
     }
 }
