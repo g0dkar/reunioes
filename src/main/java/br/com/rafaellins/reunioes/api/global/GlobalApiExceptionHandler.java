@@ -8,6 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Log4j2
@@ -66,5 +70,51 @@ public class GlobalApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return ResponseEntity.badRequest().body(payload);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+        log.warn("process=error_handling, status=method_argument_not_valid");
+
+        List<ApiErrorValidationDescription> validationErrors = ex.getBindingResult().getAllErrors().stream()
+            .map(error -> ApiErrorValidationDescription.builder()
+                .field(buildField(error))
+                .type(error.getCode())
+                .message(error.getDefaultMessage())
+                .build())
+            .collect(toList());
+
+        ApiError payload = ApiError.builder()
+            .status(BAD_REQUEST.value())
+            .message(BAD_REQUEST.getReasonPhrase())
+            .code(BAD_REQUEST.name())
+            .validationErrors(validationErrors)
+            .build();
+
+        return ResponseEntity.badRequest().body(payload);
+    }
+
+    /**
+     * Gets the field from an {@link ObjectError}.
+     */
+    private String buildField(ObjectError error) {
+        if (error instanceof FieldError) {
+            return ((FieldError) error).getField();
+        } else {
+            String code = error.getCode();
+            String[] codes = error.getCodes();
+
+            if (codes != null) {
+                if (codes.length >= 3) {
+                    return codes[2].substring(code.length() + 1);
+                } else {
+                    return codes[0].substring(code.length() + 1);
+                }
+            }
+        }
+
+        return "";
     }
 }
