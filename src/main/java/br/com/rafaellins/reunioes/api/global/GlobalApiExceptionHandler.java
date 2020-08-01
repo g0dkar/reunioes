@@ -11,6 +11,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -20,10 +21,21 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Log4j2
 @RestControllerAdvice
 public class GlobalApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ApiError> handleThrowable(Throwable throwable) {
+        log.error("process=error_handling, status=unexpected_error", throwable);
+
+        ApiError payload = ApiError.of(throwable, INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(payload);
+    }
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
